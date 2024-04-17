@@ -13,7 +13,7 @@ import java.util.List;
 
 //궁금증 -> RestAPI의 정점이 GET,POST,DELETE 같은 메서드를 지정할 수 있는 것 아닌가?
 //그럼 URI를 각 목적별로 분류할 필요없이. "/memo"로 GET,POST,DELETE를 보내서 한번에 처리하는게 좋은건가???
-@Controller
+@RestController
 @RequestMapping("/memo")
 @AllArgsConstructor
 public class MemoController {
@@ -33,18 +33,18 @@ public class MemoController {
         memoService.registerMemo(memoDto);
     }
 
-//    //단일 조회
-//    @GetMapping("/read")
-//    public Memo readMemo(int mid, @RequestBody String uid){
-//        System.out.println(memoService.readMemo(mid, uid));
-//        return memoService.readMemo(mid, uid);
-//    }
-
-    @GetMapping ("/read/{mid}")
-    public Memo readMemo(@PathVariable int mid, @RequestParam String uid){
+    //단일 조회
+    @PostMapping("/read/{mid}")
+    public Memo readMemo(@PathVariable int mid, @RequestBody String uid){
         System.out.println(memoService.readMemo(mid, uid));
-        return  memoService.readMemo(mid, uid);
+        return memoService.readMemo(mid, uid);
     }
+
+//    @GetMapping ("/read/{mid}")   //GET으로 조회 시 url에 "?uid=user1"이런 방식으로 uid를 작성해줘야해서 좀 이상한거 같다.
+//    public Memo readMemo(@PathVariable int mid, @RequestParam String uid){
+//        System.out.println(memoService.readMemo(mid, uid));
+//        return  memoService.readMemo(mid, uid);
+//    }
 
 
     //모든 메모 조회
