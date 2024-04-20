@@ -7,14 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/user")
+@RestController
+@RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public void registerUser(@RequestBody User user){
         userService.registerUser(user);

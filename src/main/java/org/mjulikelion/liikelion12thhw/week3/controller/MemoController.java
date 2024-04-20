@@ -2,19 +2,14 @@ package org.mjulikelion.liikelion12thhw.week3.controller;
 
 import lombok.AllArgsConstructor;
 import org.mjulikelion.liikelion12thhw.week3.Memo;
-import org.mjulikelion.liikelion12thhw.week3.dto.MemoDTO;
 import org.mjulikelion.liikelion12thhw.week3.service.MemoService;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-//궁금증 -> RestAPI의 정점이 GET,POST,DELETE 같은 메서드를 지정할 수 있는 것 아닌가?
-//그럼 URI를 각 목적별로 분류할 필요없이. "/memo"로 GET,POST,DELETE를 보내서 한번에 처리하는게 좋은건가???
 @RestController
-@RequestMapping("/memo")
+@RequestMapping("/memos")
 @AllArgsConstructor
 public class MemoController {
 
@@ -27,42 +22,42 @@ public class MemoController {
     }
 
     //등록
-    @PostMapping("/register")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerMemo(@RequestBody MemoDTO memoDto){
-        memoService.registerMemo(memoDto);
+    public void registerMemo(@RequestBody String content, @RequestHeader String userId){
+        memoService.registerMemo(content,userId);
     }
 
     //단일 조회
-    @PostMapping("/read/{mid}")
-    public Memo readMemo(@PathVariable int mid, @RequestBody String uid){
-        System.out.println(memoService.readMemo(mid, uid));
-        return memoService.readMemo(mid, uid);
-    }
-
-//    @GetMapping ("/read/{mid}")   //GET으로 조회 시 url에 "?uid=user1"이런 방식으로 uid를 작성해줘야해서 좀 이상한거 같다.
-//    public Memo readMemo(@PathVariable int mid, @RequestParam String uid){
-//        System.out.println(memoService.readMemo(mid, uid));
-//        return  memoService.readMemo(mid, uid);
+//    @PostMapping("/read/{memoId}")
+//    public Memos readMemo(@PathVariable int memoId, @RequestBody String userId){
+//        System.out.println(memoService.readMemo(memoId, userId));
+//        return memoService.readMemo(memoId, userId);
 //    }
+
+    @GetMapping ("/{memoId}")
+    public Memo getMemo(@PathVariable int memoId, @RequestHeader String userId){
+//        System.out.println(memoService.get(memoId, userId));
+        return  memoService.get(memoId, userId);
+    }
 
 
     //모든 메모 조회
-    @PostMapping("/list/{writerId}")
-    public List<Memo> listMemo(@PathVariable String writerId, @RequestBody String uid){
-        return memoService.listMemo(writerId, uid);
+    @GetMapping("/list/{writerId}")
+    public List<Memo> getUserMemoList(@PathVariable String writerId, @RequestHeader String userId){
+        return memoService.getList(writerId, userId);
     }
 
     //특정 메모 삭제
-    @DeleteMapping("/delete/{mid}")
-    public void deleteMemo(@PathVariable int mid, @RequestBody String uid){
-        memoService.deleteMemo(mid, uid);
+    @DeleteMapping("/{memoId}")
+    public void deleteMemo(@PathVariable int memoId, @RequestHeader String userId){
+        memoService.delete(memoId, userId);
     }
 
     //특정 메모 수정
-    @PatchMapping("/modify/{mid}")
-    public void modifyMemo(@PathVariable int mid, @RequestBody MemoDTO memoDTO){
-        memoService.modifyMemo(mid,memoDTO);
+    @PatchMapping("/{memoId}")
+    public void modifyMemo(@PathVariable int memoId, @RequestHeader String userId, @RequestBody String content){
+        memoService.modify(memoId, userId, content);
     }
 
 

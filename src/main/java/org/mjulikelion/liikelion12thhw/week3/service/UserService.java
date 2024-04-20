@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import org.mjulikelion.liikelion12thhw.week3.User;
 import org.mjulikelion.liikelion12thhw.week3.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @AllArgsConstructor

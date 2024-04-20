@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class MemoDTO {
 
-    private final String uid;
+    private final String userId;
     private final String content;
 
 }
