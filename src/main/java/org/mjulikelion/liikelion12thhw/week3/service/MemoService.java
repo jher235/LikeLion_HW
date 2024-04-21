@@ -14,7 +14,7 @@ public class MemoService {
     private final MemoRepository memoRepository;
 
     public void registerMemo(String content, String userId){
-        memoRepository.create(content, userId);
+        memoRepository.beforeCreate(content, userId);
     }
 
 

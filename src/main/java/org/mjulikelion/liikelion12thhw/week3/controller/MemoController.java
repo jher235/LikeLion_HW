@@ -16,7 +16,7 @@ public class MemoController {
     private final MemoService memoService;
 
     //오류 확인용
-    @GetMapping("/list")
+    @GetMapping("")
     public List<Memo> printLists(){
         return memoService.print();
     }
@@ -28,19 +28,11 @@ public class MemoController {
         memoService.registerMemo(content,userId);
     }
 
-    //단일 조회
-//    @PostMapping("/read/{memoId}")
-//    public Memos readMemo(@PathVariable int memoId, @RequestBody String userId){
-//        System.out.println(memoService.readMemo(memoId, userId));
-//        return memoService.readMemo(memoId, userId);
-//    }
-
     @GetMapping ("/{memoId}")
     public Memo getMemo(@PathVariable int memoId, @RequestHeader String userId){
 //        System.out.println(memoService.get(memoId, userId));
         return  memoService.get(memoId, userId);
     }
-
 
     //모든 메모 조회
     @GetMapping("/list/{writerId}")
@@ -59,6 +51,5 @@ public class MemoController {
     public void modifyMemo(@PathVariable int memoId, @RequestHeader String userId, @RequestBody String content){
         memoService.modify(memoId, userId, content);
     }
-
 
 }
