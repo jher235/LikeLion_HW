@@ -14,7 +14,8 @@ public class MemoService {
     private final MemoRepository memoRepository;
 
     public void registerMemo(String content, String userId){
-        memoRepository.beforeCreate(content, userId);
+        Memo memo = new Memo(memoRepository.getMemoId(),content,userId);
+        memoRepository.create(memo);
     }
 
 
@@ -23,8 +24,8 @@ public class MemoService {
     }
 
 
-    public List<Memo> getList(String writerId, String userId){
-        return memoRepository.getList(writerId, userId);
+    public List<Memo> getList(String userId){
+        return memoRepository.getList(userId);
     }
 
 

@@ -1,5 +1,6 @@
 package org.mjulikelion.liikelion12thhw.week3.repository;
 
+import lombok.Getter;
 import org.mjulikelion.liikelion12thhw.week3.Memo;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 @Repository
 public class MemoRepository implements CustomRepository<Memo>{
 
+    @Getter
     private int memoId=0;
     private final List<Memo> memoList = new LinkedList<>();
 
@@ -18,15 +20,9 @@ public class MemoRepository implements CustomRepository<Memo>{
 
     }
 
-    //여기서 create에 필요한 정보들을 모아 Memo객체를 생성한 후  create로 보내줍니다.
-    public void beforeCreate(String content, String writerId){
-        Memo memo = new Memo(memoId,content,writerId);
-        create(memo);
-    }
-
     @Override
     public void create(Memo memo) {
-        checkDupMemoId(memo.getMemoId());
+        checkDupMemo(memo);
         memoList.add(memo);
         System.out.println("memoList = "+ memoList.size());
         memoId++;
@@ -38,10 +34,7 @@ public class MemoRepository implements CustomRepository<Memo>{
         return memo;
     }
 
-    public List<Memo> getList(String writerId, String userId){
-        if(!writerId.equals(userId)){
-            throw new IllegalArgumentException("권한이 없습니다.");
-        }
+    public List<Memo> getList(String userId){
         return memoList.stream().filter(i->i.getWriterId().equals(writerId)).collect(Collectors.toList());
     }
 
@@ -59,8 +52,8 @@ public class MemoRepository implements CustomRepository<Memo>{
     }
 
     //메모 생성 시 중복확인 메서드
-    private void checkDupMemoId(int memoId){
-        if(memoList.stream().anyMatch(memo -> memo.getMemoId()==memoId)) {
+    private void checkDupMemo(Memo memo){
+        if(memoList.stream().anyMatch(m -> m.getMemoId()==memo.getMemoId())) {
             throw new IllegalArgumentException("메모 ID "+memoId+"는 이미 존재합니다.");
         }
     }

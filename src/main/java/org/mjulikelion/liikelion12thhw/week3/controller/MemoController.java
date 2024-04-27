@@ -35,9 +35,9 @@ public class MemoController {
     }
 
     //모든 메모 조회
-    @GetMapping("/list/{writerId}")
-    public List<Memo> getUserMemoList(@PathVariable String writerId, @RequestHeader String userId){
-        return memoService.getList(writerId, userId);
+    @GetMapping("")
+    public List<Memo> getUserMemoList(@RequestHeader String userId){
+        return memoService.getList(userId);
     }
 
     //특정 메모 삭제
