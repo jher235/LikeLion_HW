@@ -23,7 +23,6 @@ public class MemoRepository implements CustomRepository<Memo> {
     }
 
     public void create(Memo memo) {
-
         memoList.add(memo);
         System.out.println("memoList = " + memoList.size());
         memoId++;
@@ -45,7 +44,7 @@ public class MemoRepository implements CustomRepository<Memo> {
 
     public void modify(Memo modMemo, Memo preMemo) {
         memoList.remove(preMemo);
-        memoList.add(memoId, modMemo);
+        memoList.add(modMemo);
     }
 
     //메모 생성 전 메모가 존재하는지 확인
@@ -57,6 +56,5 @@ public class MemoRepository implements CustomRepository<Memo> {
     public boolean checkAuth(Memo memo, String userId) {
         return memo.getWriterId().equals(userId);
     }
-
 
 }

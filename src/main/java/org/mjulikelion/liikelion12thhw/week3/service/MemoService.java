@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class MemoService {
+public class MemoService {  //비지니스 로직 전부 service에서, 생성할 때를 제외하곤 Optinal로 존재 검사를 했습니다.
     private final MemoRepository memoRepository;
 
     public void registerMemo(MemoCreateDto memoCreateDTO, String userId) {
