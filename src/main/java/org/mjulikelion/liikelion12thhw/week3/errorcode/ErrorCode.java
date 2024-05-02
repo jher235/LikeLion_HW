@@ -18,7 +18,7 @@ public enum ErrorCode {
     private final String code;
     private final String message;
 
-    // Dto의 유효성 검사를 실패한 경우, 에러코드 반환
+    //Dto의 유효성 검사를 실패한 경우, 에러코드 반환
     public static ErrorCode resolveValidationErrorCode(String code) {
         return switch (code) {
             case "NotNull" -> NOT_NULL;
