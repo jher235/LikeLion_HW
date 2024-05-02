@@ -1,7 +1,7 @@
 package org.mjulikelion.liikelion12thhw.week3.repository;
 
 import lombok.Getter;
-import org.mjulikelion.liikelion12thhw.week3.Memo;
+import org.mjulikelion.liikelion12thhw.week3.domain.Memo;
 import org.springframework.stereotype.Repository;
 
 import java.util.LinkedList;

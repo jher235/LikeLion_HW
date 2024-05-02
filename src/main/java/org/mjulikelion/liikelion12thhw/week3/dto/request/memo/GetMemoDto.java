@@ -1,16 +1,23 @@
 package org.mjulikelion.liikelion12thhw.week3.dto.request.memo;
 
 import lombok.Getter;
-import org.mjulikelion.liikelion12thhw.week3.Memo;
+import org.mjulikelion.liikelion12thhw.week3.domain.Memo;
 
 @Getter
 public class GetMemoDto {
 
-    //수정필요
-    private final Memo memo;
 
+    private final String title;
+    private final int memoId;
+    private final String writerId;
+    private final String content;
 
     public GetMemoDto(Memo memo) {
-        this.memo = memo;
+        this.title = memo.getTitle();
+        this.memoId = memo.getMemoId();
+        this.writerId = memo.getWriterId();
+        this.content = memo.getContent();
     }
+
+
 }

@@ -11,7 +11,7 @@ public class ErrorResponseDto {
     private final String message;
     private final String detail;
 
-    //예상 가능한 예외일 ㄱㅇ우
+    //예상 가능한 예외일 경우
     public static ErrorResponseDto res(final CustomException customException) {
         String errorCode = customException.getErrorCode().getCode();
         String message = customException.getErrorCode().getMessage();

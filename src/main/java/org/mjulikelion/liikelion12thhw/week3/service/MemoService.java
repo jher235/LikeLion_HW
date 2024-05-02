@@ -2,7 +2,9 @@ package org.mjulikelion.liikelion12thhw.week3.service;
 
 
 import lombok.AllArgsConstructor;
-import org.mjulikelion.liikelion12thhw.week3.Memo;
+import org.mjulikelion.liikelion12thhw.week3.domain.Memo;
+import org.mjulikelion.liikelion12thhw.week3.dto.request.memo.GetMemoDto;
+import org.mjulikelion.liikelion12thhw.week3.dto.request.memo.GetMemoListDto;
 import org.mjulikelion.liikelion12thhw.week3.dto.request.memo.MemoCreateDto;
 import org.mjulikelion.liikelion12thhw.week3.dto.request.memo.MemoModifyDto;
 import org.mjulikelion.liikelion12thhw.week3.repository.MemoRepository;
@@ -21,38 +23,49 @@ public class MemoService {  //비지니스 로직 전부 service에서, 생성�
         if (memoRepository.isExist(memoId)) {
             throw new IllegalArgumentException("메모 ID " + memoId + "는 이미 존재합니다.");
         }
-        Memo memo = new Memo(memoId, memoCreateDTO.getContent(), userId);
+        Memo memo = new Memo(memoId, memoCreateDTO.getTitle(), memoCreateDTO.getContent(), userId);
         memoRepository.create(memo);
     }
 
-    public Memo get(int memoId, String userId) {
+    public GetMemoDto get(int memoId, String userId) {
 
         Optional<Memo> optionalMemo = memoRepository.get(memoId);
         Memo memo = optionalMemo.orElseThrow(() -> new IllegalArgumentException("메모 ID " + memoId + "는 존재하지 않습니다."));
         memoRepository.checkAuth(memo, userId);
-        return memo;
+        GetMemoDto getMemoDto = new GetMemoDto(memo);
+        return getMemoDto;
     }
 
 
-    public List<Memo> getList(String userId) {
-        return memoRepository.getList(userId);
+    public GetMemoListDto getList(String userId) {
+        GetMemoListDto getMemoListDto = new GetMemoListDto(memoRepository.getList(userId));
+        return getMemoListDto;
     }
 
 
     public void delete(int memoId, String userId) {
-        Memo memo = get(memoId, userId);
+        Memo memo = findByMemoId(memoId, userId);
+        get(memoId, userId);
         memoRepository.remove(memo);
     }
 
 
     public void modify(int memoId, String userId, MemoModifyDto memoModifyDTO) {
-        Memo preMemo = get(memoId, userId);
-        Memo newMemo = new Memo(memoId, memoModifyDTO.getContent(), userId);
+        Memo preMemo = findByMemoId(memoId, userId);
+        Memo newMemo = new Memo(memoId, memoModifyDTO.getTitle(), memoModifyDTO.getContent(), userId);
         memoRepository.modify(newMemo, preMemo);
     }
 
     public List<Memo> print() {
         return memoRepository.printList();
+    }
+
+    public Memo findByMemoId(int memoId, String userId) {
+
+        Optional<Memo> optionalMemo = memoRepository.get(memoId);
+        Memo memo = optionalMemo.orElseThrow(() -> new IllegalArgumentException("메모 ID " + memoId + "는 존재하지 않습니다."));
+        memoRepository.checkAuth(memo, userId);
+        return memo;
     }
 
 }
