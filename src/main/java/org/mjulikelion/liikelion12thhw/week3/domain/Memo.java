@@ -24,18 +24,16 @@ public class Memo extends Entity {
 
     public void like(User user) {
 
-        Like like = islikedByUser(user);
+        Like like = findlikeByUser(user);
         if (like != null) {
             likeList.remove(like);
         } else {
             likeList.add(new Like(this.id, user.getId()));
         }
-
     }
 
-    private Like islikedByUser(User user) {
+    private Like findlikeByUser(User user) {
         return likeList.stream().filter(like -> like.isLikedByUser(user)).findAny().orElse(null);
     }
-
 
 }

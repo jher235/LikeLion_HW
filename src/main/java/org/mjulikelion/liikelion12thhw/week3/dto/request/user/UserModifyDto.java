@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class UserModifyDto {
-    @NotNull(message = "name이 null입니다")
+    @NotNull(message = "이름을 입력해주세요")
     private String name;
 }

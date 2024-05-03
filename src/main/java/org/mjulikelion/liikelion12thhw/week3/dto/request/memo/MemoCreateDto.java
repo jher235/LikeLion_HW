@@ -7,9 +7,9 @@ import lombok.Getter;
 @Getter
 public class MemoCreateDto {
 
-    @NotNull(message = "content가 null입니다")
+    @NotNull(message = "내용을 작성해주세요")
     private String content;
 
-    @NotNull(message = "title이 null입니다")
+    @NotNull(message = "제목을 작성해주세요")
     private String title;
 }
