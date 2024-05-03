@@ -1,6 +1,6 @@
 package org.mjulikelion.liikelion12thhw.week3.exception;
 
-import org.mjulikelion.liikelion12thhw.week3.errorcode.ErrorCode;
+import org.mjulikelion.liikelion12thhw.week3.exception.errorcode.ErrorCode;
 
 public class DtoValidationException extends CustomException {
     //에러코드 + 왜 실패했는지 저장하기 위한 detail

@@ -1,7 +1,7 @@
 package org.mjulikelion.liikelion12thhw.week3.exception;
 
 import lombok.Getter;
-import org.mjulikelion.liikelion12thhw.week3.errorcode.ErrorCode;
+import org.mjulikelion.liikelion12thhw.week3.exception.errorcode.ErrorCode;
 
 @Getter
 public class CustomException extends RuntimeException {

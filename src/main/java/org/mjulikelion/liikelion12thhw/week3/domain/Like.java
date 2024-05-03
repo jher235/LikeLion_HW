@@ -4,12 +4,19 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 //@AllArgsConstructor
 @RequiredArgsConstructor
 @Getter
 public class Like {
-    private final int memoId;
-    private final String userName;
-    private final LocalDateTime date = LocalDateTime.now(); //원래 private LocalDateTime date으로 선언하려고 했는데 @RequiredArgsConstructor이 자꾸 final을 넣어준다.
+    private final UUID memoId;
+    private final UUID userId;
+    private final LocalDateTime createdAt = LocalDateTime.now();
+
+    public boolean isLikedByUser(User user) {
+        System.out.println(user.getId() + " : " + this.userId);
+        return user.getId().equals(this.userId);
+    }
+
 }

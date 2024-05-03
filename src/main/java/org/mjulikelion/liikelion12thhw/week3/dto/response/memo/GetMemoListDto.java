@@ -1,14 +1,13 @@
-package org.mjulikelion.liikelion12thhw.week3.dto.request.memo;
+package org.mjulikelion.liikelion12thhw.week3.dto.response.memo;
 
 import lombok.Getter;
 import org.mjulikelion.liikelion12thhw.week3.domain.Memo;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Getter
 public class GetMemoListDto {
-    private List<Memo> memoList = new LinkedList<>();
+    private final List<Memo> memoList;
 
     public GetMemoListDto(List<Memo> memoList) {
         this.memoList = memoList;
