@@ -1,7 +1,7 @@
 package org.mjulikelion.liikelion12thhw.week3.dto.response.memo;
 
 import lombok.Getter;
-import org.mjulikelion.liikelion12thhw.week3.domain.Memo;
+import org.mjulikelion.liikelion12thhw.week3.model.Memo;
 
 import java.util.List;
 

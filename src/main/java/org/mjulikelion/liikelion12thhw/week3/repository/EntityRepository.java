@@ -2,7 +2,6 @@ package org.mjulikelion.liikelion12thhw.week3.repository;
 
 
 import lombok.AllArgsConstructor;
-import org.mjulikelion.liikelion12thhw.week3.domain.Entity;
 import org.mjulikelion.liikelion12thhw.week3.exception.NotFoundException;
 
 import java.util.List;

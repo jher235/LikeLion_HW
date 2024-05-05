@@ -1,17 +1,17 @@
 package org.mjulikelion.liikelion12thhw.week3.dto.response.like;
 
 import lombok.Getter;
-import org.mjulikelion.liikelion12thhw.week3.domain.Like;
+import org.mjulikelion.liikelion12thhw.week3.model.MemoLike;
 
 import java.util.List;
 
 @Getter
 public class GetLikeListDto {
     private final int count;
-    private final List<Like> likeList;
+    private final List<MemoLike> likeList;
 
 
-    public GetLikeListDto(int count, List<Like> nameList) {
+    public GetLikeListDto(int count, List<MemoLike> nameList) {
         this.count = count;
         this.likeList = nameList;
     }
