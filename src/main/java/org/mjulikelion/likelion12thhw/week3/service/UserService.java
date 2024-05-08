@@ -7,9 +7,9 @@ import org.mjulikelion.likelion12thhw.week3.dto.request.user.LoginUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.ModifyUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.RegisterUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.response.user.GetOrganizationsDto;
-import org.mjulikelion.likelion12thhw.week3.exception.ConflictException;
 import org.mjulikelion.likelion12thhw.week3.exception.ForbiddenException;
-import org.mjulikelion.likelion12thhw.week3.exception.NotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.user.UserConflictException;
+import org.mjulikelion.likelion12thhw.week3.exception.user.UserNotFoundException;
 import org.mjulikelion.likelion12thhw.week3.model.User;
 import org.mjulikelion.likelion12thhw.week3.repository.UserOrganizationRepository;
 import org.mjulikelion.likelion12thhw.week3.repository.UserRepository;
@@ -28,21 +28,18 @@ public class UserService {
     private final UserOrganizationRepository userOrganizationRepository;
 
     public void registerUser(RegisterUserDto registerUserDto) {
-        UUID userId = UUID.randomUUID();
+        if (userRepository.existsByEmail(registerUserDto.getEmail())) {
+            throw new UserConflictException(registerUserDto.getEmail() + "는 이미 가입한 이메일입니다.");
+        }
+
         User user = User.builder()
                 .name(registerUserDto.getName())
                 .email(registerUserDto.getEmail())
                 .password(registerUserDto.getPassword())
                 .build();
 
-        if (userRepository.existsById(userId)) {
-            throw new ConflictException(userId + "는 이미 존재하는 아이디입니다.");
-        }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new ConflictException(user.getEmail() + "는 이미 가입한 이메일입니다.");
-        }
         userRepository.save(user);
-        log.info("userId: " + userId);
+        log.info("userId: " + user.getId());
     }
 
     public void modify(ModifyUserDto modifyUserDto, UUID userId) {
@@ -73,11 +70,11 @@ public class UserService {
     }
 
     private User findById(UUID uuid) {
-        return userRepository.findById(uuid).orElseThrow(() -> new NotFoundException("유저 " + uuid + "를 찾을 수 없습니다."));
+        return userRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException());
     }
 
     private User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("존재하지 않는 email입니다."));
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("존재하지 않는 email입니다."));
     }
 
 }

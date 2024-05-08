@@ -6,7 +6,6 @@ import org.mjulikelion.likelion12thhw.week3.dto.ResponseDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.LoginUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.ModifyUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.RegisterUserDto;
-import org.mjulikelion.likelion12thhw.week3.dto.response.user.GetOrganizationsDto;
 import org.mjulikelion.likelion12thhw.week3.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,15 +40,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<UUID>> login(@RequestBody LoginUserDto loginUserDto) {
+    public ResponseEntity<ResponseDto<UUID>> login(@RequestBody @Valid LoginUserDto loginUserDto) {
         UUID id = userService.login(loginUserDto);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "로그인 성공", id), HttpStatus.OK);
-    }
-
-    @GetMapping("/organizations")
-    public ResponseEntity<ResponseDto<GetOrganizationsDto>> getOrganizations(@RequestHeader("userId") UUID userId) {
-        GetOrganizationsDto getOrganizationsDto = userService.getOrganizations(userId);
-        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "유저의 조직 목록", getOrganizationsDto), HttpStatus.OK);
     }
 
 

@@ -44,6 +44,6 @@ public class User extends BaseEntity {
     private List<MemoLike> memoLikes;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserOrganization> organizations;
 }

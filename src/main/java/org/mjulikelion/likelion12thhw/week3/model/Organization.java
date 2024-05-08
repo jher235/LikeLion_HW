@@ -18,7 +18,7 @@ import java.util.List;
 public class Organization extends BaseEntity {
 
     @JsonIgnore
-    @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<UserOrganization> userOrganization;
 
     @Column(length = 20, nullable = false, unique = true)

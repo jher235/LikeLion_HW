@@ -9,7 +9,8 @@ import org.mjulikelion.likelion12thhw.week3.dto.response.like.GetLikeListDto;
 import org.mjulikelion.likelion12thhw.week3.dto.response.memo.GetMemoDto;
 import org.mjulikelion.likelion12thhw.week3.dto.response.memo.GetMemoListDto;
 import org.mjulikelion.likelion12thhw.week3.exception.ForbiddenException;
-import org.mjulikelion.likelion12thhw.week3.exception.NotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.memo.MemoNotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.user.UserNotFoundException;
 import org.mjulikelion.likelion12thhw.week3.model.Memo;
 import org.mjulikelion.likelion12thhw.week3.model.MemoLike;
 import org.mjulikelion.likelion12thhw.week3.model.User;
@@ -83,7 +84,7 @@ public class MemoService {
 
     private void validateUser(UUID userId) {
         if (!userRepository.existsById(userId)) {
-            throw new NotFoundException(userId + "는 존재하지 않는 아이디입니다.");
+            throw new UserNotFoundException();
         }
     }
 
@@ -124,12 +125,12 @@ public class MemoService {
 
     private Memo findMemoByMemoId(UUID uuid) {
         return memoRepository.findById(uuid).orElseThrow(() ->
-                new NotFoundException("메모 " + uuid + "를 찾을 수 없습니다."));
+                new MemoNotFoundException());
     }
 
     private User findUserByUserId(UUID uuid) {
         return userRepository.findById(uuid).orElseThrow(() ->
-                new NotFoundException("유저 " + uuid + "를 찾을 수 없습니다."));
+                new UserNotFoundException());
     }
 
 

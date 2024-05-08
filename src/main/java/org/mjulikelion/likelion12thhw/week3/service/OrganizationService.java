@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mjulikelion.likelion12thhw.week3.dto.request.Organization.RegisterOrganizationDto;
 import org.mjulikelion.likelion12thhw.week3.dto.response.Organization.GetUsersDto;
-import org.mjulikelion.likelion12thhw.week3.exception.ConflictException;
-import org.mjulikelion.likelion12thhw.week3.exception.NotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.organization.OrganizationConflictException;
+import org.mjulikelion.likelion12thhw.week3.exception.organization.OrganizationNotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.user.UserNotFoundException;
 import org.mjulikelion.likelion12thhw.week3.model.Organization;
 import org.mjulikelion.likelion12thhw.week3.model.User;
 import org.mjulikelion.likelion12thhw.week3.model.UserOrganization;
@@ -31,7 +32,7 @@ public class OrganizationService {
         String name = normalizeName(registerOrganizationDto.getName());
 
         if (organizationRepository.existsByName(name)) {
-            throw new ConflictException("이미 존재하는 단체입니다.");
+            throw new OrganizationConflictException();
         }
         Organization organization = Organization.builder()
                 .name(name)
@@ -49,8 +50,9 @@ public class OrganizationService {
                 .organization(organization)
                 .build();
 
-        if (this.isExist(userId, organization)) {
-            throw new ConflictException("이미 가입된 단체입니다.");
+        Example<UserOrganization> example = Example.of(userOrganization);
+        if (userOrganizationRepository.exists(example)) {
+            throw new OrganizationConflictException("이미 가입된 단체입니다.");
         }
         userOrganizationRepository.save(userOrganization);
     }
@@ -59,13 +61,12 @@ public class OrganizationService {
         User user = this.findUserByUserId(userId);
         Organization organization = this.findById(organizationId);
         UserOrganization userOrganization = userOrganizationRepository.findByUserAndOrganization(user, organization)
-                .orElseThrow(() -> new NotFoundException("가입되지 않은 단체입니다."));
+                .orElseThrow(() -> new OrganizationNotFoundException("가입되지 않은 단체입니다."));
         userOrganizationRepository.delete(userOrganization);
     }
 
     public GetUsersDto getUsers(UUID id) {
         Organization organization = this.findById(id);
-//        List<UserOrganization> userOrganizations = organization.getUserOrganization();
         GetUsersDto getUsersDto = new GetUsersDto(organization.getUserOrganization().stream()
                 .map(u -> u.getUser()).collect(Collectors.toList()));
         return getUsersDto;
@@ -77,21 +78,21 @@ public class OrganizationService {
     }
 
     private Organization findById(UUID id) {
-        return organizationRepository.findById(id).orElseThrow(() -> new NotFoundException("존재하지 않는 단체입니다."));
+        return organizationRepository.findById(id).orElseThrow(() -> new OrganizationNotFoundException());
     }
 
     private User findUserByUserId(UUID uuid) {
-        return userRepository.findById(uuid).orElseThrow(() -> new NotFoundException("존재하지 않는 유저입니다."));
+        return userRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException());
     }
 
-    private boolean isExist(UUID userId, Organization organization) {
-        UserOrganization userOrganization = UserOrganization.builder()
-                .user(this.findUserByUserId(userId))
-                .organization(organization)
-                .build();
-
-        Example<UserOrganization> example = Example.of(userOrganization);
-        return userOrganizationRepository.exists(example);
-    }
+//    private boolean isExist(UUID userId, Organization organization) {
+//        UserOrganization userOrganization = UserOrganization.builder()
+//                .user(this.findUserByUserId(userId))
+//                .organization(organization)
+//                .build();
+//
+//        Example<UserOrganization> example = Example.of(userOrganization);
+//        return userOrganizationRepository.exists(example);
+//    }
 
 }
