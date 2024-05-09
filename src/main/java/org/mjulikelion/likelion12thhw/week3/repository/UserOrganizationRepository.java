@@ -13,6 +13,5 @@ public interface UserOrganizationRepository extends JpaRepository<UserOrganizati
 
     Optional<UserOrganization> findByUserAndOrganization(User user, Organization organization);
 
-    //    List<Organization> findAllByUser(User user);
     List<UserOrganization> findAllByUser(User user);
 }

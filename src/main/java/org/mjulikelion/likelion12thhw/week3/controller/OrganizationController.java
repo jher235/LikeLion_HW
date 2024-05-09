@@ -23,8 +23,9 @@ public class OrganizationController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<ResponseDto<Void>> registerOrganization(@RequestBody @Valid RegisterOrganizationDto registerOrganizationDto) {
-        organizationService.register(registerOrganizationDto);
+    public ResponseEntity<ResponseDto<Void>> registerOrganization(
+            @RequestBody @Valid RegisterOrganizationDto registerOrganizationDto, @RequestHeader("userId") UUID userId) {
+        organizationService.register(registerOrganizationDto, userId);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.CREATED, "단체 생성 완료"), HttpStatus.CREATED);
     }
 

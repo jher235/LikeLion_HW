@@ -9,9 +9,11 @@ public enum ErrorCode {
     USER_NOT_FOUND("4040", "유저를 찾을 수 없습니다."),
     MEM0_NOT_FOUND("4041", "메모를 찾을 수 없습니다."),
     ORGANIZATION_NOT_FOUND("4042", "단체를 찾을 수 없습니다."),
+    JOIN_NOT_FOUND("4043", "가입하지 않은 단체입니다"),
     USER_CONFLICT("4090", "이미 존재하는 유저입니다."),
     MEMO_CONFLICT("4091", "이미 존재하는 메모입니다."),
     ORGANIZATION_CONFLICT("4092", "이미 존재하는 단체입니다."),
+    JOIN_CONFLICT("4093", "이미 가입한 단체입니다"),
     FORBIDDEN("4030", "접근 권한이 없습니다"),
 
     NOT_NULL("9001", "필수값이 누락되었습니다."),
@@ -31,6 +33,8 @@ public enum ErrorCode {
             case "NotNull" -> NOT_NULL;
             case "NotBlank" -> NOT_BLANK;
             case "Length" -> LENGTH;
+            case "Size" -> SIZE;
+            case "Email" -> EMAIL;
             default -> throw new IllegalArgumentException("Unexpected value: " + code);
         };
     }

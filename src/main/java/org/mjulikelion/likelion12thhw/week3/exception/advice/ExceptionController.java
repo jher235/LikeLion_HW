@@ -25,7 +25,7 @@ public class ExceptionController {
 //    }
 
     //예상 가능할 때 오류 - 다형성으로 한번에 처리
-    @ExceptionHandler(CustomException.class)
+    @ExceptionHandler(CustomException.class)//CustomException의 경우 사용됨
     public ResponseEntity<ErrorResponseDto> handleCustomException(CustomException customException) {
         this.writeLog(customException);
         HttpStatus httpStatus = this.resolveHttpStatus(customException);//customException의 HttpStatus를 반환 받아옴
@@ -33,8 +33,8 @@ public class ExceptionController {
     }
 
     //원인을 알 수 없는 예외처리
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)// 500(INTERNAL_SERVER_ERROR)로 설정
-    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)// 500(INTERNAL_SERVER_ERROR)로 설정 -> 상태코드로 이걸 반환함
+    @ExceptionHandler(Exception.class)//모든 예외에 대해 이걸 사용
     public ResponseEntity<ErrorResponseDto> handleException(Exception exception) {
         this.writeLog(exception);
         return new ResponseEntity<>(

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mjulikelion.likelion12thhw.week3.dto.request.Organization.RegisterOrganizationDto;
 import org.mjulikelion.likelion12thhw.week3.dto.response.Organization.GetUsersDto;
+import org.mjulikelion.likelion12thhw.week3.exception.organization.JoinConflictException;
+import org.mjulikelion.likelion12thhw.week3.exception.organization.JoinNotFoundException;
 import org.mjulikelion.likelion12thhw.week3.exception.organization.OrganizationConflictException;
 import org.mjulikelion.likelion12thhw.week3.exception.organization.OrganizationNotFoundException;
 import org.mjulikelion.likelion12thhw.week3.exception.user.UserNotFoundException;
@@ -28,8 +30,9 @@ public class OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final UserRepository userRepository;
 
-    public void register(RegisterOrganizationDto registerOrganizationDto) {
-        String name = normalizeName(registerOrganizationDto.getName());
+    public void register(RegisterOrganizationDto registerOrganizationDto, UUID userId) {
+        String name = registerOrganizationDto.getName().strip();
+        User user = this.findUserByUserId(userId);
 
         if (organizationRepository.existsByName(name)) {
             throw new OrganizationConflictException();
@@ -39,6 +42,13 @@ public class OrganizationService {
                 .build();
 
         organizationRepository.save(organization);
+
+        UserOrganization userOrganization = UserOrganization.builder()
+                .user(user)
+                .organization(organization)
+                .build();
+        userOrganizationRepository.save(userOrganization);
+
         log.info(String.valueOf(organization.getId()));
     }
 
@@ -52,7 +62,7 @@ public class OrganizationService {
 
         Example<UserOrganization> example = Example.of(userOrganization);
         if (userOrganizationRepository.exists(example)) {
-            throw new OrganizationConflictException("이미 가입된 단체입니다.");
+            throw new JoinConflictException();
         }
         userOrganizationRepository.save(userOrganization);
     }
@@ -61,7 +71,7 @@ public class OrganizationService {
         User user = this.findUserByUserId(userId);
         Organization organization = this.findById(organizationId);
         UserOrganization userOrganization = userOrganizationRepository.findByUserAndOrganization(user, organization)
-                .orElseThrow(() -> new OrganizationNotFoundException("가입되지 않은 단체입니다."));
+                .orElseThrow(() -> new JoinNotFoundException());
         userOrganizationRepository.delete(userOrganization);
     }
 
@@ -72,11 +82,6 @@ public class OrganizationService {
         return getUsersDto;
     }
 
-    //이름에 통일성 부여
-    private String normalizeName(String name) {
-        return name.strip().replace(" ", "_");
-    }
-
     private Organization findById(UUID id) {
         return organizationRepository.findById(id).orElseThrow(() -> new OrganizationNotFoundException());
     }
@@ -84,15 +89,5 @@ public class OrganizationService {
     private User findUserByUserId(UUID uuid) {
         return userRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException());
     }
-
-//    private boolean isExist(UUID userId, Organization organization) {
-//        UserOrganization userOrganization = UserOrganization.builder()
-//                .user(this.findUserByUserId(userId))
-//                .organization(organization)
-//                .build();
-//
-//        Example<UserOrganization> example = Example.of(userOrganization);
-//        return userOrganizationRepository.exists(example);
-//    }
 
 }
