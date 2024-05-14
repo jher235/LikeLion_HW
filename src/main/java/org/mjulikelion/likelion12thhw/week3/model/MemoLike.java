@@ -1,6 +1,5 @@
 package org.mjulikelion.likelion12thhw.week3.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -15,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity(name = "memo_like")
 public class MemoLike extends BaseEntity {
-    @JsonIgnore
+    //    @JsonIgnore
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Memo memo;
 
-    @JsonIgnore
+    //    @JsonIgnore
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private User user;
 }

@@ -14,9 +14,8 @@ public interface MemoLikeRepository extends JpaRepository<MemoLike, UUID> {
 
     List<MemoLike> findAllByMemo(Memo memo);
 
-//    Boolean existsBy(User user, Memo memo);
+    Boolean existsMemoLikeByUserAndMemo(User user, Memo memo);
 
     Optional<MemoLike> findMemoLikeByUserAndMemo(User user, Memo memo);
-
 
 }

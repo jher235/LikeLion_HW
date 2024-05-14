@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mjulikelion.likelion12thhw.week3.dto.request.memo.MemoCreateDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.memo.MemoModifyDto;
-import org.mjulikelion.likelion12thhw.week3.dto.response.like.GetLikeListDto;
-import org.mjulikelion.likelion12thhw.week3.dto.response.memo.GetMemoDto;
-import org.mjulikelion.likelion12thhw.week3.dto.response.memo.GetMemoListDto;
+import org.mjulikelion.likelion12thhw.week3.dto.response.like.GetMemoLikesResponseData;
+import org.mjulikelion.likelion12thhw.week3.dto.response.memo.GetMemoListData;
+import org.mjulikelion.likelion12thhw.week3.dto.response.memo.MemoResponse;
+import org.mjulikelion.likelion12thhw.week3.exception.ConflictException;
 import org.mjulikelion.likelion12thhw.week3.exception.ForbiddenException;
-import org.mjulikelion.likelion12thhw.week3.exception.memo.MemoNotFoundException;
-import org.mjulikelion.likelion12thhw.week3.exception.user.UserNotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.NotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.errorcode.ErrorCode;
 import org.mjulikelion.likelion12thhw.week3.model.Memo;
 import org.mjulikelion.likelion12thhw.week3.model.MemoLike;
 import org.mjulikelion.likelion12thhw.week3.model.User;
@@ -20,7 +21,6 @@ import org.mjulikelion.likelion12thhw.week3.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -32,105 +32,89 @@ public class MemoService {
     private final UserRepository userRepository;
     private final MemoLikeRepository likeRepository;
 
-    public void registerMemo(MemoCreateDto memoCreateDTO, UUID userId) {
-
-        validateUser(userId);
+    public void registerMemo(MemoCreateDto memoCreateDTO, User user) {
 
         Memo memo = Memo.builder()
                 .title(memoCreateDTO.getTitle())
                 .content(memoCreateDTO.getContent())
-                .user(findUserByUserId(userId))
+                .user(user)
                 .build();
-
         memoRepository.save(memo);
         log.info(String.valueOf(memo.getId()));
     }
 
-    public GetMemoDto get(UUID memoId, UUID userId) {
-
-        validateUser(userId);
+    public MemoResponse get(UUID memoId, User user) {
         Memo memo = this.findMemoByMemoId(memoId);
-        checkAuth(memo, userId);
-        GetMemoDto getMemoDto = new GetMemoDto(memo);
-        return getMemoDto;
+        checkAuth(memo, user);
+        MemoResponse memoResponse = new MemoResponse(memo);
+        return memoResponse;
     }
 
 
-    public GetMemoListDto getList(UUID userId) {
-        validateUser(userId);
-        GetMemoListDto getMemoListDto = new GetMemoListDto(memoRepository.findAllByUserId(userId));
-        memoRepository.findAllByUserId(userId).stream().forEach(i -> log.info(String.valueOf(i)));
-        return getMemoListDto;
+    public GetMemoListData getList(User user) {
+        GetMemoListData getMemoListData = new GetMemoListData(memoRepository.findAllByUser(user));
+        memoRepository.findAllByUser(user).stream().forEach(i -> log.info(String.valueOf(i)));
+        return getMemoListData;
     }
 
 
-    public void delete(UUID memoId, UUID userId) {
-        validateUser(userId);
+    public void delete(UUID memoId, User user) {
         Memo memo = this.findMemoByMemoId(memoId);
-        checkAuth(memo, userId);
+        checkAuth(memo, user);
         memoRepository.delete(memo);
     }
 
 
-    public void modify(UUID memoId, UUID userId, MemoModifyDto memoModifyDTO) {
-        validateUser(userId);
+    public void modify(UUID memoId, User user, MemoModifyDto memoModifyDTO) {
         Memo memo = this.findMemoByMemoId(memoId);
-        checkAuth(memo, userId);
+        checkAuth(memo, user);
         if (!memoModifyDTO.getTitle().isEmpty()) memo.setTitle(memoModifyDTO.getTitle());
         if (!memoModifyDTO.getContent().isEmpty()) memo.setContent(memoModifyDTO.getContent());
         memoRepository.save(memo);//세이브 하나로 add, update가 모두 가능 - 기존 ID 존재할 경우 거기에 업데이트한다고 함.
     }
 
 
-    private void validateUser(UUID userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException();
-        }
-    }
-
     //권한 확인
-    private void checkAuth(Memo memo, UUID userId) {
-        if (!memo.getUser().getId().equals(userId)) {
-            throw new ForbiddenException("해당 메모에 대한 권한이 없는 아이디입니다.");
+    private void checkAuth(Memo memo, User user) {
+        if (!memo.getUser().getId().equals(user.getId())) {
+            throw new ForbiddenException(ErrorCode.MEMO_FORBIDDEN, "해당 메모에 대한 권한이 없는 아이디입니다.");
         }
     }
 
-    //기존 좋아요가 없으면 좋아요 추가, 있으면 좋아요 취소
-    public void pushLike(UUID userId, UUID memoId) {
-        validateUser(userId);
+    public void like(User user, UUID memoId) {
+
         Memo memo = this.findMemoByMemoId(memoId);
-        User user = this.findUserByUserId(userId);
-
-        Optional<MemoLike> optionalMemoLike = likeRepository.findMemoLikeByUserAndMemo(user, memo);
-
-        if (optionalMemoLike.isPresent()) {
-            likeRepository.delete(optionalMemoLike.get());
-        } else {
-            MemoLike like = MemoLike.builder()
-                    .user(user)
-                    .memo(memo)
-                    .build();
-
-            likeRepository.save(like);
+        if (likeRepository.existsMemoLikeByUserAndMemo(user, memo)) {
+            throw new ConflictException(ErrorCode.LIKE_CONFLICT);
         }
+        MemoLike memoLike = MemoLike.builder()
+                .user(user)
+                .memo(memo)
+                .build();
+        likeRepository.save(memoLike);
     }
 
-    public GetLikeListDto getLikeListById(UUID memoId) {
+    public void unLike(User user, UUID memoId) {
+
+        Memo memo = this.findMemoByMemoId(memoId);
+        MemoLike memoLike = likeRepository.findMemoLikeByUserAndMemo(user, memo)
+                .orElseThrow(() -> new ConflictException(ErrorCode.UNLIKE_CONFLICT));
+        likeRepository.delete(memoLike);
+    }
+
+
+    public GetMemoLikesResponseData getLikeListById(UUID memoId) {
         Memo memo = this.findMemoByMemoId(memoId);
         List<MemoLike> likeList = likeRepository.findAllByMemo(memo);
         int likeCount = likeList.size();
-        GetLikeListDto getLikeListDto = new GetLikeListDto(likeCount, likeList);
-        return getLikeListDto;
+        GetMemoLikesResponseData getMemoLikesResponseData = new GetMemoLikesResponseData(likeCount, likeList);
+        log.info("111");
+        return getMemoLikesResponseData;
     }
 
     private Memo findMemoByMemoId(UUID uuid) {
         return memoRepository.findById(uuid).orElseThrow(() ->
-                new MemoNotFoundException());
-    }
-
-    private User findUserByUserId(UUID uuid) {
-        return userRepository.findById(uuid).orElseThrow(() ->
-                new UserNotFoundException());
+                new NotFoundException(ErrorCode.MEM0_NOT_FOUND));
     }
 
 

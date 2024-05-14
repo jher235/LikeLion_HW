@@ -3,12 +3,11 @@ package org.mjulikelion.likelion12thhw.week3.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mjulikelion.likelion12thhw.week3.dto.request.Organization.RegisterOrganizationDto;
-import org.mjulikelion.likelion12thhw.week3.dto.response.Organization.GetUsersDto;
-import org.mjulikelion.likelion12thhw.week3.exception.organization.JoinConflictException;
-import org.mjulikelion.likelion12thhw.week3.exception.organization.JoinNotFoundException;
-import org.mjulikelion.likelion12thhw.week3.exception.organization.OrganizationConflictException;
-import org.mjulikelion.likelion12thhw.week3.exception.organization.OrganizationNotFoundException;
-import org.mjulikelion.likelion12thhw.week3.exception.user.UserNotFoundException;
+import org.mjulikelion.likelion12thhw.week3.dto.response.user.GetUserResponseData;
+import org.mjulikelion.likelion12thhw.week3.dto.response.user.UserResponse;
+import org.mjulikelion.likelion12thhw.week3.exception.ConflictException;
+import org.mjulikelion.likelion12thhw.week3.exception.NotFoundException;
+import org.mjulikelion.likelion12thhw.week3.exception.errorcode.ErrorCode;
 import org.mjulikelion.likelion12thhw.week3.model.Organization;
 import org.mjulikelion.likelion12thhw.week3.model.User;
 import org.mjulikelion.likelion12thhw.week3.model.UserOrganization;
@@ -30,12 +29,11 @@ public class OrganizationService {
     private final OrganizationRepository organizationRepository;
     private final UserRepository userRepository;
 
-    public void register(RegisterOrganizationDto registerOrganizationDto, UUID userId) {
+    public void register(RegisterOrganizationDto registerOrganizationDto, User user) {
         String name = registerOrganizationDto.getName().strip();
-        User user = this.findUserByUserId(userId);
 
         if (organizationRepository.existsByName(name)) {
-            throw new OrganizationConflictException();
+            throw new ConflictException(ErrorCode.ORGANIZATION_CONFLICT);
         }
         Organization organization = Organization.builder()
                 .name(name)
@@ -52,42 +50,37 @@ public class OrganizationService {
         log.info(String.valueOf(organization.getId()));
     }
 
-    public void join(UUID userId, UUID organizationId) {
+    public void join(User user, UUID organizationId) {
         Organization organization = this.findById(organizationId);
 
         UserOrganization userOrganization = UserOrganization.builder()
-                .user(this.findUserByUserId(userId))
+                .user(user)
                 .organization(organization)
                 .build();
 
         Example<UserOrganization> example = Example.of(userOrganization);
         if (userOrganizationRepository.exists(example)) {
-            throw new JoinConflictException();
+            throw new ConflictException(ErrorCode.ORGANIZATION_JOIN_CONFLICT);
         }
         userOrganizationRepository.save(userOrganization);
     }
 
-    public void withdraw(UUID userId, UUID organizationId) {
-        User user = this.findUserByUserId(userId);
+    public void withdraw(User user, UUID organizationId) {
         Organization organization = this.findById(organizationId);
         UserOrganization userOrganization = userOrganizationRepository.findByUserAndOrganization(user, organization)
-                .orElseThrow(() -> new JoinNotFoundException());
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORGANIZATION_JOIN_NOT_FOUND));
         userOrganizationRepository.delete(userOrganization);
     }
 
-    public GetUsersDto getUsers(UUID id) {
+    public GetUserResponseData getUsers(UUID id) {
         Organization organization = this.findById(id);
-        GetUsersDto getUsersDto = new GetUsersDto(organization.getUserOrganization().stream()
-                .map(u -> u.getUser()).collect(Collectors.toList()));
-        return getUsersDto;
+        GetUserResponseData getUserResponseData = new GetUserResponseData(organization.getUserOrganization().stream()
+                .map(u -> new UserResponse(u.getUser().getName())).collect(Collectors.toList()));
+        return getUserResponseData;
     }
 
     private Organization findById(UUID id) {
-        return organizationRepository.findById(id).orElseThrow(() -> new OrganizationNotFoundException());
-    }
-
-    private User findUserByUserId(UUID uuid) {
-        return userRepository.findById(uuid).orElseThrow(() -> new UserNotFoundException());
+        return organizationRepository.findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.ORGANIZATION_NOT_FOUND));
     }
 
 }

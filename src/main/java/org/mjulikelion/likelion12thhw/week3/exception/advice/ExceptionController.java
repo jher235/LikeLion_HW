@@ -17,13 +17,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExceptionController {
 
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    @ExceptionHandler(NotFoundException.class)
-//    public ResponseEntity<ErrorResponseDto> handleNotFoundException(NotFoundException notFoundException) {
-//        this.writeLog(notFoundException);
-//        return new ResponseEntity<>(ErrorResponseDto.res(notFoundException), HttpStatus.NOT_FOUND);
-//    }
-
     //예상 가능할 때 오류 - 다형성으로 한번에 처리
     @ExceptionHandler(CustomException.class)//CustomException의 경우 사용됨
     public ResponseEntity<ErrorResponseDto> handleCustomException(CustomException customException) {

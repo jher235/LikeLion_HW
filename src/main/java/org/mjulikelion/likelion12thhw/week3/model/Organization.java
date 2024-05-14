@@ -1,6 +1,5 @@
 package org.mjulikelion.likelion12thhw.week3.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +16,7 @@ import java.util.List;
 @Builder
 public class Organization extends BaseEntity {
 
-    @JsonIgnore
+    //    @JsonIgnore
     @OneToMany(mappedBy = "organization", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<UserOrganization> userOrganization;
 
