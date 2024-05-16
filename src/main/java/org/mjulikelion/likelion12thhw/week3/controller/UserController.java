@@ -50,20 +50,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseDto<UUID>> login(@RequestBody @Valid LoginUserDto loginUserDto, HttpServletResponse response) {
+    public ResponseEntity<ResponseDto<Void>> login(@RequestBody @Valid LoginUserDto loginUserDto, HttpServletResponse response) {
         UUID id = userService.login(loginUserDto);
 
         String payload = id.toString();
-        log.info(payload);
         String accessToken = jwtTokenProvider.createToken(payload);
-        log.info(accessToken);
         ResponseCookie cookie = ResponseCookie.from("AccessToken", JwtEncoder.encodeJwtBearerToken(accessToken))
                 .maxAge(Duration.ofSeconds(60 * 30))//30분
                 .path("/")//모든 경로에서 접근가능
                 .build();
 
         response.addHeader("set-cookie", cookie.toString());
-        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "로그인 성공", id), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "로그인 성공"), HttpStatus.OK);
     }
 
     @GetMapping("/test")
