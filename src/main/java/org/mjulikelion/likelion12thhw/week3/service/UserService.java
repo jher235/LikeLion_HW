@@ -26,10 +26,9 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-
     private final UserOrganizationRepository userOrganizationRepository;
 
-    public void registerUser(RegisterUserDto registerUserDto) {
+    public void register(RegisterUserDto registerUserDto) {
         if (userRepository.existsByEmail(registerUserDto.getEmail())) {
             throw new ConflictException(ErrorCode.USER_CONFLICT);
         }
@@ -45,9 +44,7 @@ public class UserService {
     }
 
     public void modify(ModifyUserDto modifyUserDto, User user) {
-        user.setName(modifyUserDto.getName());
-        user.setEmail(modifyUserDto.getEmail());
-        user.setPassword(modifyUserDto.getPassword());
+        user.modify(modifyUserDto.getEmail(), modifyUserDto.getName(), modifyUserDto.getPassword());
         userRepository.save(user);
     }
 

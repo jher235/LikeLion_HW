@@ -4,9 +4,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mjulikelion.likelion12thhw.annotation.authentication.AuthenticatedUser;
-import org.mjulikelion.likelion12thhw.authentication.JwtEncoder;
-import org.mjulikelion.likelion12thhw.authentication.JwtTokenProvider;
+import org.mjulikelion.likelion12thhw.week3.annotation.AuthenticatedUser;
+import org.mjulikelion.likelion12thhw.week3.authentication.JwtEncoder;
+import org.mjulikelion.likelion12thhw.week3.authentication.JwtTokenProvider;
 import org.mjulikelion.likelion12thhw.week3.dto.ResponseDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.LoginUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.ModifyUserDto;
@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ResponseDto<Void>> registerUser(@RequestBody @Valid RegisterUserDto registerUserDto) {
-        userService.registerUser(registerUserDto);
+        userService.register(registerUserDto);
         return new ResponseEntity<>(ResponseDto.res(HttpStatus.CREATED, "유저 회원가입 성공"), HttpStatus.CREATED);
     }
 

@@ -14,6 +14,5 @@ public class GetMemoLikesResponseData {
     public GetMemoLikesResponseData(int count, List<MemoLike> likeList) {
         this.count = count;
         this.likeList = likeList.stream().map(i -> new MemoLikeResponse(i.getUser().getName())).collect(Collectors.toList());
-//        this.likeList = likeList.stream().map(i -> MemoLikeResponse.memoLikeResponse(i)).collect(Collectors.toList());
     }
 }

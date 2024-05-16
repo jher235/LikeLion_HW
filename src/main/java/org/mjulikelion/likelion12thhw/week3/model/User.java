@@ -46,4 +46,10 @@ public class User extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UserOrganization> organizations;
+
+    public void modify(String newEmail, String newName, String newPassword) {
+        this.email = newEmail;
+        this.name = newName;
+        this.password = newPassword;
+    }
 }

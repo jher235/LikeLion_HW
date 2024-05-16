@@ -17,7 +17,6 @@ import org.mjulikelion.likelion12thhw.week3.model.MemoLike;
 import org.mjulikelion.likelion12thhw.week3.model.User;
 import org.mjulikelion.likelion12thhw.week3.repository.MemoLikeRepository;
 import org.mjulikelion.likelion12thhw.week3.repository.MemoRepository;
-import org.mjulikelion.likelion12thhw.week3.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +28,6 @@ import java.util.UUID;
 public class MemoService {
     //한 서비스에서 여러 리포지토리를 의존해도 된다.
     private final MemoRepository memoRepository;
-    private final UserRepository userRepository;
     private final MemoLikeRepository likeRepository;
 
     public void registerMemo(MemoCreateDto memoCreateDTO, User user) {
@@ -68,8 +66,7 @@ public class MemoService {
     public void modify(UUID memoId, User user, MemoModifyDto memoModifyDTO) {
         Memo memo = this.findMemoByMemoId(memoId);
         checkAuth(memo, user);
-        if (!memoModifyDTO.getTitle().isEmpty()) memo.setTitle(memoModifyDTO.getTitle());
-        if (!memoModifyDTO.getContent().isEmpty()) memo.setContent(memoModifyDTO.getContent());
+        memo.modify(memoModifyDTO.getTitle(), memoModifyDTO.getContent());
         memoRepository.save(memo);//세이브 하나로 add, update가 모두 가능 - 기존 ID 존재할 경우 거기에 업데이트한다고 함.
     }
 
@@ -108,7 +105,6 @@ public class MemoService {
         List<MemoLike> likeList = likeRepository.findAllByMemo(memo);
         int likeCount = likeList.size();
         GetMemoLikesResponseData getMemoLikesResponseData = new GetMemoLikesResponseData(likeCount, likeList);
-        log.info("111");
         return getMemoLikesResponseData;
     }
 

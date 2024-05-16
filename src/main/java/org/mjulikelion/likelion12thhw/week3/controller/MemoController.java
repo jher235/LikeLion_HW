@@ -3,7 +3,7 @@ package org.mjulikelion.likelion12thhw.week3.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.mjulikelion.likelion12thhw.annotation.authentication.AuthenticatedUser;
+import org.mjulikelion.likelion12thhw.week3.annotation.AuthenticatedUser;
 import org.mjulikelion.likelion12thhw.week3.dto.ResponseDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.memo.MemoCreateDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.memo.MemoModifyDto;
@@ -76,7 +76,6 @@ public class MemoController {
 
     @GetMapping("/{memoId}/like")
     public ResponseEntity<ResponseDto<GetMemoLikesResponseData>> getLikeList(@PathVariable UUID memoId) {
-//    public ResponseEntity<ResponseDto<MemoLikeResponse>> getLikeList(@PathVariable UUID memoId) {
         GetMemoLikesResponseData getMemoLikesResponseData = memoService.getLikeListById(memoId);
         log.info("222");
         log.info(getMemoLikesResponseData.getLikeList());

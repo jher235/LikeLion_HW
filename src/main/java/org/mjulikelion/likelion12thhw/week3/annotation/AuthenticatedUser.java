@@ -1,4 +1,4 @@
-package org.mjulikelion.likelion12thhw.annotation.authentication;
+package org.mjulikelion.likelion12thhw.week3.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

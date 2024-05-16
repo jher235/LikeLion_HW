@@ -1,8 +1,8 @@
-package org.mjulikelion.likelion12thhw.config;
+package org.mjulikelion.likelion12thhw.week3.config;
 
 import lombok.RequiredArgsConstructor;
-import org.mjulikelion.likelion12thhw.annotation.resolver.AuthenticatedUserArgumentResolver;
-import org.mjulikelion.likelion12thhw.authentication.AuthenticationInterceptor;
+import org.mjulikelion.likelion12thhw.week3.annotation.resolver.AuthenticatedUserArgumentResolver;
+import org.mjulikelion.likelion12thhw.week3.authentication.AuthenticationInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

@@ -13,7 +13,6 @@ import org.mjulikelion.likelion12thhw.week3.model.User;
 import org.mjulikelion.likelion12thhw.week3.model.UserOrganization;
 import org.mjulikelion.likelion12thhw.week3.repository.OrganizationRepository;
 import org.mjulikelion.likelion12thhw.week3.repository.UserOrganizationRepository;
-import org.mjulikelion.likelion12thhw.week3.repository.UserRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,6 @@ public class OrganizationService {
 
     private final UserOrganizationRepository userOrganizationRepository;
     private final OrganizationRepository organizationRepository;
-    private final UserRepository userRepository;
 
     public void register(RegisterOrganizationDto registerOrganizationDto, User user) {
         String name = registerOrganizationDto.getName().strip();

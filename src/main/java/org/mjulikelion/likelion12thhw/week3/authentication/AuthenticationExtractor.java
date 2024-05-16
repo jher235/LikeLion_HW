@@ -1,4 +1,4 @@
-package org.mjulikelion.likelion12thhw.authentication;
+package org.mjulikelion.likelion12thhw.week3.authentication;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

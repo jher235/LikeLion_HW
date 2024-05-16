@@ -56,4 +56,9 @@ public class Memo extends BaseEntity {
     @OneToMany(mappedBy = "memo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     // memo 필드를 기준으로 One To Many 관계를 맺는다. memo가 삭제되면 연관된 memo_like도 삭제된다. memo가 null이 되면 memo_like도 삭제된다. 지연로딩을 사용한다.
     private List<MemoLike> memoLikes;
+
+    public void modify(String newTitle, String newContent) {
+        this.title = newTitle;
+        this.content = newContent;
+    }
 }

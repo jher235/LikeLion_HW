@@ -2,7 +2,7 @@ package org.mjulikelion.likelion12thhw.week3.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.mjulikelion.likelion12thhw.annotation.authentication.AuthenticatedUser;
+import org.mjulikelion.likelion12thhw.week3.annotation.AuthenticatedUser;
 import org.mjulikelion.likelion12thhw.week3.dto.ResponseDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.Organization.RegisterOrganizationDto;
 import org.mjulikelion.likelion12thhw.week3.dto.response.Organization.GetOrganizationsResponseData;
