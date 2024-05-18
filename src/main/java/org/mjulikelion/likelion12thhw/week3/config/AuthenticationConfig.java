@@ -17,7 +17,7 @@ public class AuthenticationConfig implements WebMvcConfigurer {
     private final AuthenticationInterceptor authenticationInterceptor;
     private final AuthenticatedUserArgumentResolver authenticatedUserArgumentResolver;
 
-    private final String[] excludePathPatterns = {"/users/login"};
+    private final String[] excludePathPatterns = {"/login", "/logout", "/join"};
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {

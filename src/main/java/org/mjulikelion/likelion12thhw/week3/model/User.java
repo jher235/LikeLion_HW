@@ -7,13 +7,6 @@ import lombok.*;
 
 import java.util.List;
 
-//@Getter
-//@Setter
-//@SuperBuilder //상속받은 클래스에서 Builder패턴 사용을 위함
-//public class User extends Entity {
-//
-//    private String name;
-//}
 
 @Getter
 @AllArgsConstructor
@@ -30,7 +23,7 @@ public class User extends BaseEntity {
     private String name;
 
     @Setter
-    @Column(length = 20, nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @JsonIgnore

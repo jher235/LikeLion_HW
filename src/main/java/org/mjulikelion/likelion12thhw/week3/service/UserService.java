@@ -3,6 +3,7 @@ package org.mjulikelion.likelion12thhw.week3.service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mjulikelion.likelion12thhw.week3.authentication.PasswordHashEncryption;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.LoginUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.ModifyUserDto;
 import org.mjulikelion.likelion12thhw.week3.dto.request.user.RegisterUserDto;
@@ -27,16 +28,20 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserOrganizationRepository userOrganizationRepository;
+    private final PasswordHashEncryption passwordHashEncryption;
 
     public void register(RegisterUserDto registerUserDto) {
         if (userRepository.existsByEmail(registerUserDto.getEmail())) {
             throw new ConflictException(ErrorCode.USER_CONFLICT);
         }
 
+        String encryptPassword = passwordHashEncryption.encrypt(registerUserDto.getPassword());
+
+        log.info(encryptPassword);
         User user = User.builder()
                 .name(registerUserDto.getName())
                 .email(registerUserDto.getEmail())
-                .password(registerUserDto.getPassword())
+                .password(encryptPassword)
                 .build();
 
         userRepository.save(user);
@@ -44,7 +49,7 @@ public class UserService {
     }
 
     public void modify(ModifyUserDto modifyUserDto, User user) {
-        user.modify(modifyUserDto.getEmail(), modifyUserDto.getName(), modifyUserDto.getPassword());
+        user.modify(modifyUserDto.getEmail(), modifyUserDto.getName(), passwordHashEncryption.encrypt(modifyUserDto.getPassword()));
         userRepository.save(user);
     }
 
@@ -54,7 +59,8 @@ public class UserService {
 
     public UUID login(LoginUserDto loginUserDto) {
         User user = this.findByEmail(loginUserDto.getEmail());
-        if (!user.getPassword().equals(loginUserDto.getPassword())) {
+        
+        if (!passwordHashEncryption.matches(loginUserDto.getPassword(), user.getPassword())) {
             throw new ForbiddenException(ErrorCode.USER_UNAUTHORIZED);
         }
         return user.getId();
