@@ -36,7 +36,7 @@ public class MemoController {
     @GetMapping("/{memoId}")
     public ResponseEntity<ResponseDto<MemoResponse>> getMemo(@PathVariable UUID memoId, @AuthenticatedUser User user) {
         MemoResponse memoResponse = memoService.get(memoId, user);
-        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "단일 메모", memoResponse), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "단일 메모 조회", memoResponse), HttpStatus.OK);
     }
 
     //모든 메모 조회
@@ -50,7 +50,7 @@ public class MemoController {
     @DeleteMapping("/{memoId}")
     public ResponseEntity<ResponseDto<Void>> deleteMemo(@PathVariable UUID memoId, @AuthenticatedUser User user) {
         memoService.delete(memoId, user);
-        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "삭제완료"), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.res(HttpStatus.OK, "메모 삭제완료"), HttpStatus.OK);
     }
 
     //특정 메모 수정
@@ -77,7 +77,6 @@ public class MemoController {
     @GetMapping("/{memoId}/like")
     public ResponseEntity<ResponseDto<GetMemoLikesResponseData>> getLikeList(@PathVariable UUID memoId) {
         GetMemoLikesResponseData getMemoLikesResponseData = memoService.getLikeListById(memoId);
-        log.info("222");
         log.info(getMemoLikesResponseData.getLikeList());
         return new ResponseEntity<>(ResponseDto.res(
                 HttpStatus.OK, "해당 메모의 좋아요 리스트 반환 성공", getMemoLikesResponseData), HttpStatus.OK);
